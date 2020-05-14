@@ -1,0 +1,116 @@
+---
+title: "Sentiment analysis and Twitter mining"
+author: "Adam finnemann"
+date: "November 15, 2017"
+---
+  
+  
+  
+Scraping tweets is very easy. First you need to connect R to Twitter's API. Load pacman and use it to get the necessary R packages. Secondly you need to provide keys and secret from your Twitter App to R.
+
+```{r}
+library(pacman)
+p_load("twitteR", "ROAuth", "instaR", "tidyverse", "tidytext", "stringr") #packages for webscraping from R
+
+
+setwd("/Users/FlowersnIce-cream/Google Drev/Hogwarts/R Studio/work/CLasswork/9 - Twitter mining Adam") #set working directory to where you wanna save tweeets
+
+#Get your keys and secrets from your Twitter App
+#tutorial for setting up Twitter app can be found at https://www.r-bloggers.com/setting-up-the-twitter-r-package-for-text-analytics/
+
+setup_twitter_oauth(consumer_key = "h640vgMOMUNHSNWPJ3fUZGyJb",
+consumer_secret = "i9hiyHj5nT1uII7KFR5GAjBzDTvEPWVlr9Iu7yDh6fT2NE0T47",
+access_token = "	931063024286425088-wjoBtTiAdaXx7p6R9xNcCg2wfCfH4DU",
+access_secret = "TtNlCpYTGf6ScShuw0Vf6JnZNdtgTP68GdBhnzLuYuHL3")
+#Anwser yes when prompted writing 1 and enter
+
+```
+
+SCRAPING TWITTER:
+The function searchTwitter does the hard job for it. It's first argument is a searchword, which either be a hashtag fx "#cogsci", or tweets from a person fx "from:mikkelwallentin". You can include "-filter:retweets" to remove retweets. You should do that.
+Using "since" and "until" you can specify period of search. However, it's not possible to retrieve tweets older than 7 days. 
+"lang" refers to the language of tweets. T
+here is a limit to how many tweets you can access before you have to wait some time, "retryOnRateLimit" is delay used when the function gets a warning from Twitter.
+The function "twLIstToDF" turns the return from "searchTwitter" into a nice looking data frame - check it out.
+```{r}
+Tweets  <- searchTwitter("#cake -filter:retweets", n = 200, since='2017-11-09', until='2017-11-16', lang = "en", retryOnRateLimit = 120)
+#You can not go back later than a week without paying for it
+
+tweet_df <- twListToDF(Tweets)
+
+#write.csv(tweet_hashtag_x, file = "tweet_df.csv") save your data if you want to.
+
+
+```
+
+
+
+Here is a copy of the preprocessing function you wrote in the last exericse
+```{r}
+get_sentiment <- function(df, dictionary = "bing"){
+  
+  reg_words <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))"
+  
+  tidy_df <-df %>%
+    filter(!str_detect(text, "^RT")) %>% #filtering out tweets starting with RT: retweets
+    mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|http://[A-Za-z\\d]+|&amp;|&lt;|&gt;|RT|https", "")) %>% #removes homepage adresses and unecessary stuff
+    unnest_tokens(word, text, token = "regex", pattern = reg_words) %>% #removes unnests text document
+    filter(!word %in% stop_words$word) #removes stop words
+  
+  
+  
+  sentiment_df <- tidy_df %>% 
+    inner_join(get_sentiments(dictionary))
+  
+  return(sentiment_df)
+}
+
+
+sentiment_df <- get_sentimen(tweet_df)
+```
+
+
+I've written a little function which compares two sentiment dataframes.
+It takes two data frames, df1 and df1 as arguments, togehter with two hashtages. The hashtags are only used for naming plots, and aren't necessary to provide.
+```{r}
+
+comparing_sentiments <- function(df1, df2, hashtag1 = "df1", hashtag2 = "df2") {
+
+sentiment_score1 <- df1 %>%
+group_by(sentiment) %>%  # we group by sentiment
+summarise(proportion = n() / nrow(df1), #calculating as proportion of total tweets
+          group = hashtag1) #we add a column with hashtag1
+
+sentiment_score2 <-df2 %>% #we repeat the procedure for our second df 
+group_by(sentiment) %>% 
+summarise(proportion = n() / nrow(df2),
+          group = hashtag2)
+
+#we combine the two data frames
+plot_df <- rbind(sentiment_score2, sentiment_score1)
+
+#lastly we make a plot
+plot_df %>%  
+ggplot(aes(sentiment, proportion, fill = group)) +
+geom_col() +
+facet_grid(.~group)
+
+}
+
+
+```
+
+Exercise: 
+Get into groups where at least one person is able to mine Twitter. Your job is to use Twitter mining together with our above defined functions to compare Tweets your find interesting. Secondly, find the most positive hashtag possible wih minimum 1000 Tweets execluding retweets - this is a competition between groups!
+
+One idea for what you could do:
+Compare how the different dictionaries from "tidytext" works and if they agree. 
+The function get_sentiment() takes a "dictionary" argument. You can read about the different possible dictionaries here:
+http://tidytextmining.com/sentiment.html#the-sentiments-dataset or look at ?get_sentiment()
+
+Your will have to present your findings in a 2 min presentations in the end. 
+
+```{r}
+
+```
+

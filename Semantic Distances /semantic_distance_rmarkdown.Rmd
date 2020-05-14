@@ -1,0 +1,58 @@
+---
+title: "Visualizing semantic distance"
+author: "Adam finnemann"
+date: "November 9, 2017"
+---
+Read in ggplot2/tidyverse, set working directory and load the data from the semantic distance exercise.
+```{r}
+library(tidyverse) ; library(ggplot2)
+setwd("/Users/FlowersnIce-cream/Google Drev/Hogwarts/R Studio/work/CLasswork/Adam Semanticmap - 8")
+your_data <- read.csv("Harry Potter.csv")
+```
+Inspect the data frame and make sure you understand each of the columns.
+
+
+
+Replace "your_data" with your data frame and plot the development of semantic distance over time.
+```{r}
+
+ggplot(your_data, aes(word_nr, distance, label = word,  color = distance)) + 
+  geom_point() + 
+  geom_line() +
+  geom_text(check_overlap = T, position =  position_jitter(height = 2))+
+  ggtitle("Lineplot of semantic distance (trial by trial)")
+```
+Interpret the plot:
+What does small and large jumps on x-axis mean? 
+Answer:
+
+Does it seem like we search for words like we forage after food? 
+Answer:
+
+
+
+
+With your own data frame make a histogram as well. You can try different values of "binwidth" to see if you can find an interesting/pretty pattern.
+```{r}
+your_data %>% 
+  filter(distance != 100) %>% 
+  ggplot(aes(distance, color = distance)) +
+  geom_histogram(binwidth = 5, aes(fill = ..count..)) +
+  scale_fill_gradient("count", low="orange", high="purple") +
+  labs(x = "Distance", 
+       y = "Count", 
+       title = "Semantic distance distribution") +
+  scale_x_continuous(breaks = seq(0,100,5))
+
+
+```
+Interpret the plot: 
+How is the semantic distance between words distributed?
+
+
+Lastly, make a correlation analysis between time and distance. Make a scatterplot as well to help you interpet the correlation.
+You did correlation analysis as well as scatter plots last time in the Russian Blue experiment analysis. You can reuse that code.
+```{r}
+ggplot(your_data, aes(x=time, y=distance, color=distance))+geom_point()+geom_smooth(method = "lm")
+```
+

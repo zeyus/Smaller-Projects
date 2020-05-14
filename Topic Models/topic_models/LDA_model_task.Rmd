@@ -1,0 +1,238 @@
+---
+title: "Topic models -"
+author: "Adam finnemann"
+date: "November 23, 2017"
+---
+  
+  
+  
+Set wd, load packages and read in data. Note that we subset only the first 2000
+```{r}
+library(pacman)
+p_load(tidyverse, tm, stringr, tidytext)
+
+setwd("/Users/FlowersnIce-cream/Google Drev/Hogwarts/R Studio/work/CLasswork/10 - Adam - Topic models/topic_models")
+df <- read.csv("maga_lda.csv") 
+
+```
+
+-> Lines specific to poliblogs2008.csv
+# Change the names of our columns to match the data
+colnames(df) = c("ID","text","docname","rating","day","blog")
+df = df[1:2000,]
+# Row 1 to 2000, and all these rows paired columns
+
+
+
+Preprocessing: In this chunk I provide you a function called "tweet_to_corpus". It will do the preprocessing step and turn a data frame with a column named "text" into a text corpus. A corpus is a different way of storing data, that is better suited for large data sets. 
+Define the function:
+```{r}
+#Preprocessing partly taken from https://gist.github.com/bryangoodrich/7b5ef683ce8db592669e
+#Partly from http://tidytextmining.com/nasa.html#topic-modeling
+
+library(tidytext, stringr)
+#df <- read.csv("maga_lda.csv")
+
+tweet_to_corpus <- function(df){
+  
+  my_stop_words <- c("nbsp", "amp", "gt", "lt","timesnewromanpsmt", "font","td", "li", "br", "tr", "quot","st", "img", "src", "strong", "http", "file", "files","https", "vcljjqvzb", "sxdoc", "maga", "https", "#maga", "MAGA", "#the", "the")
+                                               
+  
+  tidy_tweets <-df %>% 
+    mutate(text = iconv(text, to = "ASCII//TRANSLIT"), #Convert to basic ASCII text to avoid silly characters
+           #Would make wierd ó's into o´s -> may conflict with Danish letters like Æ,Ø,Å
+    text = tolower(text),  # Converting to lower case
+    text = str_replace(text,"rt", " " ),  # Remove the "RT" (retweet) so duplicates are duplicates
+    text = str_replace(text,"@\\w+", " " ),  # Remove user names
+    text = str_replace(text,"http.+ |http.+$", " " ),  # Remove links
+    text = str_replace(text,"[[:punct:]]", " " ),  # Remove punctuation
+    text = str_replace(text,"[ |\t]{2,}", " " ),  # Remove tabs
+    text = str_replace(text,"amp", " " ),  # "&" is "&amp" in HTML, so after punctuation removed ...
+    text = str_replace(text,"^ ", "" ),  # Leading blanks
+    text = str_replace(text," $", "" ),
+    text = str_replace(text," +", " "))  # General spaces (should just do all whitespaces no?)) # Lagging blanks
+    
+    
+    corpus <- Corpus(VectorSource(df$text)) %>%  # Create corpus object - Easier for computer to work with
+      #Convinient to work with - doesn't use as much RAM
+
+# Remove English stop words. This could be greatly expanded!
+          tm_map( removeWords, stopwords("en")) %>% 
+
+# Remove numbers. This could have been done earlier, of course.
+          tm_map(removeNumbers) %>% 
+
+# Stem the words. Google if you dont understand
+          tm_map(stemDocument) %>% 
+
+# Remove the stems associated with our search terms!
+          tm_map(removeWords, my_stop_words)  %>% 
+          tm_map( removeWords, stopwords("en")) 
+  
+  
+  
+  return(corpus)
+}
+
+```
+
+
+Run the corpus on your data frame
+```{r}
+#tweet_to_corpus takes two arguments. 1 data frame, and a list of words you want removed.
+
+tweet_corpus <- tweet_to_corpus(df)
+```
+
+We can get a first glimpse at which words dominate our corpus by running the below wordcloud function. You can control how many words you want to be shown with the argument "max.words".
+```{r}
+library("wordcloud")
+wordcloud(tweet_corpus, min.freq=2, max.words = 100, random.order = TRUE, col = brewer.pal(8, "Dark2"))
+
+```
+
+
+The next line of code transforms the corpus into a document-term-matrix. Secondly it removes empty documents.
+```{r}
+# Get the lengths and make sure we only create a DTM for tweets with
+# some actual content
+doc.lengths <- rowSums(as.matrix(DocumentTermMatrix(tweet_corpus)))
+# Document Term Matrix
+dtm <- DocumentTermMatrix(tweet_corpus[doc.lengths > 0])
+
+
+```
+
+Now, we are essentially ready to train our model on our data
+
+First we need to specify some parameters for the sampling. These parameters are needed since we will use Gibb's sampling. There are different samplers, that estimates the topics in different ways.
+The values of the parameters depends on the trade-off you want between accuracy and time. 
+```{r}
+burnin <- 4000
+iter <- 2000
+thin <- 500
+seed <-list(2003,5,63,100001,765)
+nstart <- 5
+best <- TRUE
+
+```
+
+k will be the number of topics, which our model finds. It's very hard to choose the right amount of topics. There are analytical ways of estimating an appropriate number of topics. However, for more practical uses of topic models it's alright to just test different numbers until you find a group of topics that are easy to interpret
+```{r}
+k <- 5
+```
+
+Run all the lines of code below at once. Sys.time() spits out the clock. You can use this to see how long it takes for your model to converge.
+```{r}
+library("topicmodels")
+
+Sys.time()
+ldaOut <-LDA(dtm,k, method="Gibbs", control=list(nstart=nstart, seed = seed, best=best, burnin = burnin, iter = iter, thin=thin))
+Sys.time()
+```
+
+
+The next steps visualzied how each word is distributed in each topic.
+```{r}
+ap_topics <- tidy(ldaOut, matrix = "beta")
+ap_topics
+```
+
+Now we want a more fancy representation of our topics. First we need to change the ap_topics into a data frame better suited for ggplot. The code below achieves this.
+Try to make sense of the code. I will suggest that you run the code and look at the result. Secondly, try to compare it with the table you produced above to see the changes made.
+```{r}
+ap_top_terms <- ap_topics %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+ap_top_terms
+```
+
+We can put this data frame into ggplot and have a nice visualization
+```{r}
+ap_top_terms %>%
+  mutate(term = reorder(term, beta)) %>%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip()
+```
+Make an interpretation of each of these 5 topics: If you should give them a headline, what would it be?
+Topic 1: Float was a video of Trump floarting + resist + funni = Anti-Trump
+Topic 2: Trump wishing thanksgiving + retweet
+Topic 3: more of the same
+Topic 4: common words
+Topic 5: Appreciation
+
+Not super accurate for this dataset
+
+If the topics are meaningful it makes sense to move on and exploit that we extracted meaningful topic for our corpus. The first thing we want to do is to see how the topics are distributed over documents.
+In the output gama is probability of a word in the document corresponding to relative topic
+```{r}
+# ```{r echo = false} = You only see the results in knitted file - For aflevering
+
+lda_documents <- tidy(ldaOut, matrix = "gamma")
+
+lda_documents
+```
+We want to add the orginal tweets to our data frame. Assuming that your original data is named "da" this is done in the following way.
+Note that lda_documents has a length equal to number_of_topics * number_of_documents. Thus, we want to add da$text five times (ask me if this doesn't make sense to you). Luckily, R is clever enough to know that it should that by itself.
+
+```{r}
+lda_documents$tweet <- df$text
+
+lda_documents
+```
+To make interpretations easier, we want to replacee the topic number with the interpretation of the topic.
+Replace the "interpretation_of_topicX" with your word describing the topic.
+Topic 1: Float was a video of Trump floarting + resist + funni = Anti-Trump
+Topic 2: Trump wishing thanksgiving + retweet
+Topic 3: more of the same
+Topic 4: common words
+Topic 5: Appreciation
+
+```{r}
+lda_documents <- lda_documents %>% 
+  mutate(topic = as.factor(topic),
+         interpreted_topic = recode(topic, "1" = "Float was a video of Trump floarting + resist + funni = Anti-Trump",
+                                           "2" = "Trump wishing thanksgiving + retweet",
+                                           "3" = "more Thanksgiving with Trump",
+                                           "4" = "common words",
+                                           "5" = "Appreciation"))
+
+lda_documents
+```
+
+
+
+
+Task: filter 1 document out and plot it's distribution of topics. 
+```{r}
+Document_subset1 <- filter(lda_documents, document == 1)
+
+Document_subset1  
+```
+Now, print the document out and see if it's distribution of topics makes intuitively sense.
+```{r}
+ggplot(Document_subset1 , aes(x = interpreted_topic, y = gamma, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) + coord_flip()
+```
+
+
+
+Task 2:
+
+For each topic find the document that has the highest gamma(probability of the topic) - this can be thought of as the document that is most about that topic. You can use the which.max() to get the row in lda_documents with the highest value of gamma.
+
+```{r}
+
+```
+
+You the row number given by which.max() to find the corresponding tweet. Evaluate whether the result makes sense.
+```{r}
+
+
+
+```
+

@@ -1,0 +1,69 @@
+---
+title: "Visual search experiment 2017"
+author: "Mikkel Wallentin"
+date: "23 August 2017"
+output: pdf_document
+---
+
+##Visual search data
+```{r}
+#Load data
+search<- read.csv("/Users/FlowersnIce-cream/Downloads/0/03_visual_search_stuff/visual_search_data/Sebber (2017-09-20 14-30-47).csv", sep=";")
+'% accuracy:'
+mean(search$correct_resp,na.rm = TRUE)*100
+```
+
+####Now remove data with incorrect responses
+```{r}
+#Remove NAs
+search<-subset(search,search$rt!="NA")
+search<-subset(search,search$correct_resp!=0)
+
+#turn variables into factors
+search$conjunct<-as.factor(search$conjunct)
+search$present<-as.factor(search$present)
+#Remove outliers
+#search<-subset(search,search$rt<mean(search$rt)+3*sd(search$rt))
+
+```
+
+##Plot histogram of data
+```{r}
+#histogram
+hist(search$rt,breaks=10)
+
+#Q-Q-plot
+qqnorm(search$rt)
+```
+####The data is not normally distributed
+
+##Try with a log-transform
+```{r}
+#make a log-transformation
+search$logrt=log(search$rt)
+#histogram
+hist(search$logrt,breaks=10)
+#Q-Q-plot
+qqnorm(search$logrt)
+
+```
+####Better
+
+
+##Try a linear model on log-transformed data
+```{r}
+search_model<-lm(logrt~setsize*conjunct*present, data=search)
+summary(search_model)
+```
+
+##Plotting of data
+
+```{r}
+library(ggplot2)
+search$setsize_f<-as.factor(search$setsize)
+
+ggplot(search, aes(x = setsize , y = rt, color=conjunct, fill=present)) +
+  geom_point() + labs(x = "setsize", y = "Response time)") +
+  geom_smooth(method='lm')
+```
+

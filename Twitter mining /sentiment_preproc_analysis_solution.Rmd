@@ -1,0 +1,104 @@
+---
+title: "Sentiment preprocessing and analysis"
+author: "Adam finnemann"
+date: "November 15, 2017"
+---
+  
+  
+Start out by loading tidyverse, tidytext and stringr. Set your working directory and download one of uploaded Twitter data sets.
+```{r}
+
+
+```
+
+
+
+Before we can do sentiment analysis we need turn the text column into a column of single words. In this process we want to filter out a special characters and irrelevant words
+
+
+A lot of strange expressions are used on twitter, for instance homepage adresses. We want to remove these from our text. Use the following function on your text column to clean it up a bit:
+str_replace_all(text, "https://t.co/[A-Za-z\\d]+|http://[A-Za-z\\d]+|&amp;|&lt;|&gt;|RT|https", "")).
+The easiest is probably to use it with mutate().
+
+```{r}
+beer2 <- mutate(beer, text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|http://[A-Za-z\\d]+|&amp;|&lt;|&gt;|RT|https", ""))
+```
+
+
+The tidytext package has a very convenient function for turning columns for sentences into single words. It's called "unnest_tokens" and works like this
+```{r}
+
+reg_words <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))" #a list of symbols we wanna remove in the proces
+
+tokenized_df <- unnest_tokens(beer2, word, text, token = "regex", pattern = reg_words)
+```
+Inspect your DF and observe how it has become tokenized. Notice also, that unnest_tokens keeps the information from the other columns, has removed special characters and lower cased all words.
+
+
+The last step before we are ready to perform the sentiment analysis is to remove uninteresting first like "there", "now", "only" etc. A list of uninteresting word (also called stopwords) can be found in stop_words that's a data set loaded with tidytext.
+Use filter() and give it "!word %in% stop_words$word" as its True/False condition to remove stopwords.
+```{r}
+
+tokenized_df <- tokenized_df %>% 
+  filter(!word %in% stop_words$word)
+
+```
+
+
+
+
+There are still quite a lot of hashtags and @name included in our data frame. These will be filtered out, when we join our data with the sentiment list
+The function "get_sentiments()" can be used to retrieve different sentiment dictionaries.
+Description of the different dictionaries can be found at http://tidytextmining.com/sentiment.html#the-sentiments-dataset
+We will use "bing" since it's the largest and simplest.
+
+```{r}
+sentiment <- get_sentiments("bing") 
+```
+Go inspect the sentiment data frame
+
+Now we can use inner_join() to find the common words in our tokenized df and sentiment df. This process will remove many words unfortunatley. 
+```{r}
+
+sentiment_df <- tokenized_df %>% 
+  inner_join(sentiments)
+  
+```
+
+
+In the last step we want to summarise how many positive and negative words we have in our sentiment data frame. This is easily done using group_by and count().
+Try change the summarise so that it caculates the proportion of tweets instead of the absolute numbers. This is handy, if you want to compare Tweet data frames with different lenghts.
+
+```{r}
+sentiment_score <- sentiment_df %>% 
+  group_by(sentiment) %>% 
+  summarise(n = n())
+ 
+sentiment_score
+```
+
+Bonus question: 
+We are interested in comparing tweets from multiple hashtags, so we need to perform the above preprocessing several times. This goes against the general principle in programming of non-repetition. So what we want to do instead, is to write our own function.
+I've given you the general structure you need to write your own function called "get_sentiment". It takes a variable as argument (for instance a data frame of tweets), and returns a transformation of it. Here we want the transformation to be the preprocessing step from earlier.
+
+```{r}
+get_sentiment <- function(df, dictionary = "bing"){
+
+reg_words <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))"
+
+tidy_df <-df %>%
+  filter(!str_detect(text, "^RT")) %>% #filtering out tweets starting with RT: retweets
+  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|http://[A-Za-z\\d]+|&amp;|&lt;|&gt;|RT|https", "")) %>% #removes homepage adresses and unecessary stuff
+  unnest_tokens(word, text, token = "regex", pattern = reg_words) %>% #removes unnests text document
+  filter(!word %in% stop_words$word) #removes stop words
+
+
+
+sentiment_df <- tidy_df %>% 
+  inner_join(get_sentiments(dictionary))
+
+  return(sentiment_df)
+}
+
+```
+

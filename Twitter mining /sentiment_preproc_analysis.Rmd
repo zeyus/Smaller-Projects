@@ -1,0 +1,97 @@
+---
+title: "Sentiment preprocessing and analysis"
+author: "Adam finnemann"
+date: "November 15, 2017"
+---
+  
+  
+Start out by loading tidyverse, tidytext and stringr. Set your working directory and download one of uploaded Twitter data sets.
+```{r}
+setwd("/Users/FlowersnIce-cream/Google Drev/Hogwarts/R Studio/work/CLasswork/9 - Twitter mining Adam")
+install.packages("tidytext")
+install.packages("twitteR")
+library(tidyverse) ; library(tidytext) ; library(stringr) ; library(twitteR)
+data <- read.csv("wine_tweets.csv")
+
+```
+
+
+Before we can do sentiment analysis we need turn the text column into a column of single words. In this process we want to filter out a special characters and irrelevant words
+
+
+A lot of strange expressions are used on twitter, for instance homepage adresses. We want to remove these from our text. Use the following function on your text column to clean it up a bit:
+str_replace_all(text, "https://t.co/[A-Za-z\\d]+|http://[A-Za-z\\d]+|&amp;|&lt;|&gt;|RT|https", "")).
+The easiest is probably to use it with mutate().
+
+```{r}
+data$text <- as.character(data$text)
+data$text <- str_replace_all(data$text,"https://t.co/[A-Za-z\\d]+|http://[A-Za-z\\d]+|&amp;|&lt;|&gt;|RT|https", "")
+```
+
+
+The tidytext package has a very convenient function for turning columns of sentences into a column of single words. It's called "unnest_tokens" and works like this
+```{r}
+
+reg_words <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))" #a list of symbols we wanna remove in the proces
+
+tokenized_df <- unnest_tokens(data, word, text, token = "regex", pattern = reg_words)
+# We made a new variable with individual words
+```
+Inspect your DF and observe how it has become tokenized. Notice also how unnest_tokens keeps the information from the other columns, has removed special characters and lower cased all words.
+
+
+The last step before we are ready to perform the sentiment analysis is to remove uninteresting words like "there", "now", "only" etc. A list of uninteresting words (also called stopwords) can be found in stop_words. That's a data set loaded with tidytext.
+Use filter() and give it "!word %in% stop_words$word" as its True/False condition to remove stopwords.
+```{r}
+tokenized_df <- filter(tokenized_df, !word %in% stop_words$word)
+#Stopwords is a dataset loaded with tidytext
+```
+There are still quite a lot of hashtags and @name included in our data frame. These will be filtered out when we join our data with the sentiment list.
+
+
+
+The function "get_sentiments()" can be used to retrieve different sentiment dictionaries.
+Description of the different dictionaries can be found at http://tidytextmining.com/sentiment.html#the-sentiments-dataset
+We will use "bing" since it's the largest and simplest.
+
+save get_sentiments("bing") to a variable:
+```{r}
+sentiment <- get_sentiments("bing") 
+#Bing is a dictionary and scores from positive to negative - Others excist that rates words from 1-5 or in levels of aggresion and so on.
+```
+Go inspect the sentiment data frame
+
+Now we can use inner_join() to find the common words in our tokenized df and sentiment df. This prorcess will only keep words that are found in both data frames.
+```{r}
+
+sentiment_df <- tokenized_df %>% 
+  inner_join(sentiment)
+#Take what these two has in common and keep them
+  
+```
+
+
+In the last step we want to summarise how many positive and negative words we have in our sentiment data frame. This is easily done using "group_by" and "summarise(count = n())". Save the result to a new variable.
+
+```{r}
+group_by(sentiment_df, sentiment) %>%
+  summarise(count =n())
+```
+
+Bonus question: Try change the summarise function so that it caculates the proportion of tweets with negative and positive sentiments instead of the absolute numbers. This is handy if you want to compare Tweet data frames with different lenghts.
+
+
+Bonus question: 
+We are interested in comparing tweets from multiple hashtags, so we need to perform the above preprocessing several times. This goes against the general principle in programming of non-repetition. So what we want to do instead, is to write our own function.
+I've given you the general structure you need to write your own function called "get_sentiment". It takes a variable as argument (for instance a data frame of tweets), and returns a transformation of it. Here we want the transformation to be the preprocessing step from earlier.
+
+```{r}
+get_sentiment <- function(df){
+  
+  sentiment_df = do_somthing_to(df)
+
+  return(sentiment_df)
+}
+
+```
+

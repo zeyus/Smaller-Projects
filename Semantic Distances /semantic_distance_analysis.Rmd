@@ -1,0 +1,76 @@
+---
+title: "Visualizing semantic distance"
+author: "Adam finnemann"
+date: "November 9, 2017"
+---
+  
+```{r setup, include=FALSE}
+library(pacman)
+
+p_load(tidyverse, stringr)
+
+knitr::opts_knit$set(root.dir = "~/cogsci/EM3/Assignment I/assignment1")
+setwd("~/cogsci/instructor cog n com/Eigth seminar")
+data <- read.csv("test2.csv")
+```
+
+```{r}
+#Data from semantic distance test
+#Combine all student files, plot the data and run a simple lm model
+
+#Directory
+
+#Libraries
+library(plyr)
+library(dplyr)
+library(ggplot2)
+
+#Read the files in
+temp = list.files(path = "SemanticExp",full.names = T,pattern="*.csv") #create list including all csv file 
+
+data <- ldply(temp, read.csv)
+
+
+data %>% 
+  filter(category == "foods") %>% 
+  group_by(word) %>% 
+  tally %>% 
+  filter(n > 9 & n <50) %>% arrange(n) %>% 
+  ggplot(aes(word, n, fill = n)) +
+  geom_col()
+  
+
+
+
+```
+
+```{r}
+#By gender
+n = 5
+scores_gen = aggregate(first_words["word_score"], by=c(first_words["word"], first_words["gender"]), FUN=sum)
+scores_f = scores_gen[scores_gen$gender=="f",][order(-scores_f$word_score),][1:n,]
+scores_m = scores_gen[scores_gen$gender=="m",][order(-scores_m$word_score),][1:n,]
+scores_gen = rbind(scores_f, scores_m)
+scores_gen$word = factor(scores_gen$word, levels = scores_gen$word[order(-scores_gen$word_score)])
+#plot
+bp_prototype = ggplot(scores_gen, aes(x=word, y=word_score, fill=gender)) + geom_bar(stat = "identity", position="dodge")
+bp_prototype
+
+
+#Lineplot of semantic distance (trial by trial)
+myData = Data=read.csv("animals/semantics.csv", header=T)
+distance_plot = ggplot(myData, aes(x=word_nr, y=distance, label=word)) + geom_line() + geom_text() +
+  ggtitle("Lineplot of semantic distance (trial by trial)")
+distance_plot
+
+
+#Cumulative distance line plot
+cumulative_plot = ggplot(myData, aes(x=word_nr, y=cumulative, label=word)) + geom_line() + geom_text() +
+  ggtitle("Lineplot of cumulative semantic distance over time") + 
+  xlab("Word Number") + ylab("Cumulative semantic distance")
+cumulative_plot
+
+#Scatterplot of semantic distance vs. RT
+rt_scatter = ggplot(Data, aes(x=distance, y=time)) + geom_point() + stat_smooth(method="lm")
+rt_scatter
+```

@@ -1,0 +1,81 @@
+---
+title: "Visual search experiment 2017"
+author: "Mikkel Wallentin"
+date: "23 August 2017"
+output: pdf_document
+---
+
+##Emotion data
+```{r}
+#Set working directory
+setwd("C:/Users/Ejer/Desktop/Intro to Cog.Sci - instructor/Emotions and Reasoning/emotion_type1_and_type2/emotion_systems_data")
+#Load data
+emo<- read.csv("p (2017-08-28 15-02-06).csv", sep=";")
+```
+
+
+####Now remove data without responses
+```{r}
+#Remove NAs
+emo<-subset(emo,emo$rt!="NA")
+emo<-subset(emo,emo$rt>0)
+```
+
+####A table showing the proportion of males drawn left given the independent variables
+```{r}
+# A table showing the proportion of males drawn left as a function of the independent variables
+aggdata <-aggregate(emo$emotion_judge,
+    by=list(emo$category),
+                    FUN=mean, na.rm=TRUE)
+library(reshape)
+names(aggdata)<-c('Image category','% emotional')
+aggdata
+
+aggdata <-aggregate(emo$rt,
+    by=list(emo$category),
+                    FUN=mean, na.rm=TRUE)
+library(reshape)
+names(aggdata)<-c('Image category','mean RT')
+aggdata
+```
+
+###A statistical model
+```{r}
+emo_model<-lm(rt~category,data=emo)
+anova(emo_model)
+summary(emo_model)
+```
+
+
+##Plot histogram of data
+```{r}
+#histogram
+hist(emo$rt,breaks=10)
+
+#Q-Q-plot
+qqnorm(emo$rt)
+```
+####The data is not normally distributed
+
+##Try with a log-transform
+```{r}
+#make a log-transformation
+emo$logrt=log(emo$rt)
+#histogram
+hist(emo$logrt,breaks=10)
+#Q-Q-plot
+qqnorm(emo$logrt)
+
+```
+####Better
+
+
+##Plotting of data
+
+```{r}
+library(ggplot2)
+
+ggplot(emo, aes(x = category , y = rt)) +
+  geom_boxplot() + labs(x = "image category", y = "Response time)")
+```
+
