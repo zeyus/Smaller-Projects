@@ -1,0 +1,155 @@
+---
+title: "P&A hand priming demo analysis"
+author: "Cordula Vesper"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(signal)
+#Make sure you're in the folder where your data is
+getwd()
+setwd("/Users/FlowersnIce-cream/Google Drev/Hogwarts/4/Models for perception and action/Exam/3 - Movements/W13 - Motion tracking and analysis/Exp/")
+
+```
+
+Part 1. Remind yourselves what we did in the study and what we expected and why.
+
+Simple implementation of a hand-priming-effect with 4 conditions (distractors/target): 1) high/low; 2) low/low; 3) high/high; 4) low/high
+#8 søjler - Først fem har samme højde, så en lavere, så store igen. - Primet til at hoppe højere når den lave søjle kommer.
+#Der skete ikke noget hvis man ramte søjlerne (Selvom folk nok stadigt troede det) ->
+
+
+Part 2. Load one trial of your choice into R. The four columns refer to: sample, condition, x and y.
+
+```{r}
+participant <- 21
+trial <- 12
+filename <- paste(participant,'/',participant,'_',trial,'.txt',sep="")
+hp = read.table(filename,header=FALSE,sep=",",dec=".")
+names(hp) <- c("sample","cond","x","y") 
+```
+
+Part 3. Plot x against y.
+
+```{r}
+plot(hp$x,hp$y,'l')
+```
+
+Part 4. Map the y data to a more intuitive screen output with 0/0 in the lower left corner and where upwards movements are increasingly positive (i.e. so that it looks like the movements we made on the screen). 
+
+This was unnecessary, sorry!
+
+
+Part 5. Calculate the distance travelled (for x and y combined). -> The Whole Path (Don't worry about it - No Pythagora)
+# diff har som default lag1, which means that it takes the previous value and calculates the difference
+#powered and squared to avoid minus.
+```{r}
+dist <- sum(sqrt(diff(hp$x)^2 + diff(hp$y)^2)) 
+paste("Distance: ",round(dist))
+```
+
+Part 6. Add a time vector. I forgot to measure time so I had to estimate it post-hoc (fine for this exercise, not great if it was a real experiment). We can assume that each sample takes .0025 s.
+# All rows minus 1 - in the first row, time should be 0
+```{r}
+hp$t <-  (hp$sample-1) * 0.0025
+```
+
+Part 7. Calculate velocity and acceleration for y, i.e. vertical movement (Up and down). Remember: Velocity = distance difference / time difference. Acceleration = velocity difference / time difference.
+
+```{r}
+hp$vel <- c(0,diff(hp$y) / diff(hp$t))
+hp$acc <- c(0,diff(hp$vel) / diff(hp$t))
+plot(hp$t,hp$acc,'l')
+lines(hp$t,hp$vel,'l')
+lines(hp$t,hp$y,'l')
+#max(hp$y)
+#max(hp$vel)
+#Wierd to have all on the y axis
+title("position, velocity, acceleration")
+```
+
+Part 8. Play around with some filter to smoothen velocity and acceleration (most common: Butterworth filter).
+
+```{r}
+?butter()
+"""
+#n	
+filter order or generic filter model
+#W	
+critical frequencies of the filter. W must be a scalar for low-pass and high-pass filters, and W must be a two-element vector c(low, high) specifying the lower and upper bands. For digital filters, W must be between 0 and 1 where 1 is the Nyquist frequency.
+-> Low Pass = Lower values can pass -> Make it more smooth
+"""
+# requires signal package
+bf <- butter(2, 0.1, type ='low') 
+hp$velf <- filtfilt(bf,hp$vel)
+plot(hp$t,hp$vel,'l', col = "black")
+lines(hp$t,hp$velf,'l', col = "red")
+title(paste("velocity (filter cutoff ",0.1,")",sep=""))
+
+bf <- butter(2, 0.01, type ='low')
+velf_test <- filtfilt(bf,hp$vel)
+plot(hp$t,hp$vel,'l', col = "black")
+lines(hp$t,velf_test,'l', col = "red")
+title(paste("velocity (filter cutoff ",0.01,")",sep=""))
+
+bf <- butter(2, 0.1, type ='low')
+hp$accf <- filtfilt(bf,hp$acc)
+plot(hp$t,hp$acc,'l', col = "black")
+lines(hp$t,hp$accf,'l', col = "red")
+title(paste("acceleration (filter cutoff ",0.1,")",sep=""))
+```
+
+Part 9. Using zero crossings in the velocity, calculate y position extreme values (maxima and minima). Mark those extreme values on top of the x/y plot you made earlier.
+```{r}
+#Normally velocity can't go into minus, but in pixel movement you can -> So finding changes over 0, means peaks and valleys.
+
+```
+
+Part 10. Using e.g. a range of x positions, specify a segment during which the critical movement happens, i.e. the 6th movement is what we would want to compare in this study. Mark the peak in that segment in a different color.
+
+```{r}
+zcr <- c(0,diff(sign(hp$velf)))
+zcrMin <- zcr==2
+zcrMax <- zcr==-2
+plot(hp$x,hp$y,'l')
+points(hp$x[zcrMin],hp$y[zcrMin],col = "black")
+points(hp$x[zcrMax],hp$y[zcrMax],col = "green")
+
+zcrTarget <- hp$x>1160&hp$x<1330&zcrMax
+paste("Target position (x) and value (y): ",hp$x[zcrTarget],hp$y[zcrTarget])
+points(hp$x[zcrTarget],hp$y[zcrTarget],col = "red")
+title(paste("participant",participant,"trial",trial,"condition",hp$cond[1]))
+```
+
+
+
+# EXTRA - Telma
+```{r}
+#Telma
+data <- hp
+data$velextreme <- ifelse(data$vel < 20 & data$vel > -20, 1,0)
+# derivative of velocity is acceleration => the local maxima and minima are at those points where the derivative is 0
+# center the data by substracting the minimum values
+data$x_center <-  data$x - min(data$x)
+data$y_center <-  data$y - min(data$y)
+
+ggplot(data) +
+  geom_point( aes(x_center,y_center, color = factor(velextreme), size = velextreme)) + 
+  # plot by this factor, you get the zero crossing plotted in the different color
+  labs(x = "Trajectory", y = "Height")
+
+localmax <- max(data$y_center[2200:2400])
+which(data$y_center == 267.336) # 2350
+data$colorvel<- ifelse(data$y_center == localmax ,1,0)
+
+ggplot(data) +
+  geom_point( aes(x_center,y_center, size = colorvel, color = factor(colorvel))) + 
+  #geom_point( aes(x_center,y_center, size = factor(velextreme))) +
+  # plot by this factor, you get the zero crossing plotted in the different color
+  labs(x = "Trajectory", y = "Height") +
+  theme(legend.title = element_blank(), legend.position='none')
+
+```
+
