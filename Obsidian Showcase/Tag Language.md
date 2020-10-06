@@ -1,0 +1,67 @@
+- **Actions:**
+    - #events
+    - #idea
+    - #project
+    - #toponder
+    - #toresearch
+    - #experiment
+    - #toread
+    - #exam
+- **Subject:**
+    - Building
+        - #design
+        - #build
+        - #interfaces
+        - #aesthetics
+        - #product
+        - #society
+        - #culture
+        - #branding
+        - #ideation
+        - #growth
+        - #ritual
+    - **Cognition**
+        - #experience
+        - #identity
+        - #attention
+        - #memory
+        - #perception
+        - #immersion
+        - #consciousness
+        - #intuition
+        - #bias
+        - #mind
+        - #neuroscience
+        - #language
+        - #context
+        - #emotions
+    - **Being**
+        - #tao
+        - #rationality
+        - #academia
+        - #play
+        - #environment
+        - #productivity
+        - #thinking
+    - **People**
+        - #legend
+- **Resources:**
+    - #book - the one you read
+    - #books - the one you would/could read
+    - #article - the one you read
+    - #articles - the one you would/could read
+    - #podcast
+    - #movie
+    - #video
+    - #paper
+    - #story
+    - #quote
+- **XXX:**
+    - #curious - 
+    - #fundamental
+    - #wonder
+    - #funny
+    - #greenthought
+    - #LETSGO
+    - #warm
+    - #wholesome

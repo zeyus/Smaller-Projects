@@ -1,0 +1,14 @@
+[[What Technology Wants]]
+	- [[Quantified Self]] -> [[Innovation]] in what you can track
+	- [[Stephen Wolfram]] has tracked everything for years and now he uses his online 'Programme Mathematica' to get insights into what he did and where he spend his best times in any way “best” can be thought of
+	- [[Personalized Medicine]] (print yourself pills) would be powered by higherlevel tracking
+	- [[N=1]] as a study of one is useful to yourself (Although not to the general public) -> we are prone to bias and placebo though -> so we have to do [[Double-Blind Placebo]] (before and after started regimen)
+	- You can train yourself to know north be using a vibrator belt that trains you to orient towards north for a week -> your [[Umwelt]] can learn from new senses (think limitless) -> (my thought: train empathy with ecstasy) #Idea #StartStraks 
+	- If we have a livestream of [[Data]] and in time, we can mingle with other peoples timelines 
+	- We need better [[Tools]] of [[Tracking]] -> audio is better than video maybe? -> have an audiotracker for each day of your life? #StartStraks 
+		- Practise storytelling when having to speak notes out loud #Idea
+	- Making sense of the data we need [[AI]] tools to find meaning in BIG petadata
+	- [[Precrime]] (minority report) will be tracked and catched -> scary
+	- [[Bits]] like [[Genes]] and [[Memes]] want to be spread -> watching the watchers -> we are uncomfortable being watched today because we don’t know who and what it is used for compared to having the old lady watch you and watch out for your home in the neighborhood -> [[Snowden]] is important because he makes tracking known so we can legislate it -> we share information with our governments to be treated as an individual instead of a [[Anonymous]] character/number -> but we want to know what data we give 
+	- Tracking can feel normal if they are symmetrical for everyone and is based in [[Morality]]
+	- In a [[Transparent]] society -> can you have anonymity? -> The [[Anonymous]] poisons systems because it avoids [[Responsibility]] and [[Trust]] needs identity -> but Anonymity should not be totally destroyed, but keeped at a low

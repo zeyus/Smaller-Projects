@@ -1,0 +1,15 @@
+## [[LifeSmack MOC]]
+- Make a book club 
+	- You'll get to read lots of books
+	- You get to share them
+	- You get partners to discuss the books with
+- Make it for kids?
+	- You'll feel super cool 
+	- You'll get to be around kids
+	- You'll get to read lots of Young Adult books
+		- #SteamyTwillight
+		- kjhdsfkjhsdkjhfkjsdhfjkhsd
+		- sdfjsdmfnbdsmnbfsd
+		- ,sdnf,msdhfkjhsdkjfh'
+		- sdfkjbsdfhsdhf
+		- book thatI read [[What Technology Wants]]

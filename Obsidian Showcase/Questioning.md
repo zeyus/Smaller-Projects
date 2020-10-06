@@ -1,0 +1,13 @@
+[[What Technology Wants]]
+- [[Ebay]] was a reputation machine
+	- [[Hyperlink]]ing etc. Are new ways of [[Inventing]] [[Institutions]]
+	- As we connect everyone to each other we’ll start being able to build new [[Social Systems]]
+	- Even the most angelic tech can be used for the dark
+	- [[Decentralization]] and [[Datacentering]] is a trend we’ll see more of
+	- [[Battleship Galactica]] is an extrodinairy complex story #ExploreMore 
+	- [[Question]]s save people time -> the better the search, the better the life -> now we can ask [[AI]] [[Butler]]s about many things
+	- A good [[Question]] is the best (a good questions challenges what is, it seeds [[Innovation]] everywhere - not silly, nor obvious, a good question is what humans are for -> [[MentalModels]] #Philosophy 
+	- We move from the [[Certainty]] of answers to [[Uncertainty]] of questions
+- [[Caos]] and fluidity is the future landscape to explore -> questioning is simply more powerful than answering
+    - Becoming 
+- We are in a [[Statechange]] of our [[Humanity]] - the matrix is becoming to fulfill our evolving needs in new ways

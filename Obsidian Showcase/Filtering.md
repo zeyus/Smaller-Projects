@@ -1,0 +1,17 @@
+[[What Technology Wants]]
+	- Types
+		- headlines
+		- Brands
+		- Curators
+		- Government (nationalistic matters)
+		- Friends (what’s popular amongst them)
+		- “More like this” filter on eg. Amazon -> often better than anything else
+	- Can become an [[Echo Chamber]]
+	- Latest innovations in [[3D Printing]] and [[PrintOnDemand]] can make designs unique to you
+	- 3D avatar -> Universal You -> knows what you like and how you like it from what you’ve done and seen and wished for before
+	- The [[Value]] of our [[Attention]] is stable
+	- Let [[Creator]]s be their own advertiser
+	- Asymmetry in email -> right now you can put yourself on someones to-do list -> we should get money from reading [[Email]] #Idea
+	- We should charge people from taking our [[Attention]] -> advertisement is not just free -> they steal [[Life]] #Idea #A-Fine-Argument 
+	- Human experiences is more and more [[Value]]able as commodities get cheaper (think of weddings as the [[Experience Economy]]) -> we use experiences to not become a commodity of work ourselves #Philosophy
+	- [[Adds]] and [[Filter]]s are mirrors of who we are -> we become more and more distinct as our mirror learns about us

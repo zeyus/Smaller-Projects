@@ -1,0 +1,57 @@
+{
+  "theme": "moonstone",
+  "pluginEnabledStatus": {
+    "file-explorer": true,
+    "global-search": true,
+    "switcher": true,
+    "graph": true,
+    "backlink": true,
+    "command-palette": true,
+    "markdown-importer": true,
+    "word-count": true,
+    "tag-pane": true,
+    "page-preview": true,
+    "starred": true,
+    "daily-notes": true,
+    "outline": true,
+    "translucency": false
+  },
+  "spellcheck": true,
+  "hotkeys": {
+    "editor:follow-link": [
+      {
+        "modifiers": [
+          "Alt"
+        ],
+        "key": "Ω"
+      }
+    ],
+    "backlink:open-backlinks": [
+      {
+        "modifiers": [
+          "Mod"
+        ],
+        "key": "l"
+      }
+    ],
+    "graph:open-local": [
+      {
+        "modifiers": [
+          "Mod",
+          "Shift"
+        ],
+        "key": "g"
+      }
+    ],
+    "editor:insert-link": [
+      {
+        "modifiers": [
+          "Mod",
+          "Shift"
+        ],
+        "key": "l"
+      }
+    ]
+  },
+  "alwaysUpdateLinks": true
+}

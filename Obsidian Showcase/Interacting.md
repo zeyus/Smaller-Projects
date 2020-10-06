@@ -1,0 +1,12 @@
+[[What Technology Wants]]
+	- believeable [[Virtual Worlds]] is almost here
+	- [[Project Sensa]] is the second edition of [[Second Life]]
+	- [[Minecraft]] is a new version of [[Second Life ]]
+	- Eyecontact, with [[Eyetracking]], gives much deeper social interactions online
+	- Voice and fingerinteraction with phone will be the future - not big gestures that mimic exercise (think [[VoiceMessages]] and [[SignLanguage]]) #Idea #StartStraks
+	- If it doesn’t have [[Sensor]]s and can’t be interacted with it’s broken -> it should sound and feel beautiful (we stroke, touch, feel quality and responsiveness) #A-Fine-Argument 
+	- [[Wearables]] is closer than outside screens -> [[BrainTrackers]] are next
+	- Drones can now be done in VR -> you are actually flying -> beaming yourself up into the sky #Idea 
+	- [[Virtual Worlds]] is fully tracked - but with [[Sensor]]s eveywhere, [[AI]] is making the real world trackable and nudgeable and gameable as well
+	- [[AR]] makes cashed messages and geocache treasures more real #Idea 
+	- We can be anything (a lobster or switch legs for arms) -> our [[Umwelt]] is highly adaptable

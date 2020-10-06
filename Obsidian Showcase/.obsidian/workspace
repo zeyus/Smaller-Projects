@@ -1,0 +1,167 @@
+{
+  "main": {
+    "id": "2b1c000c2964380b",
+    "type": "split",
+    "children": [
+      {
+        "id": "bbec141e1b4acce3",
+        "type": "leaf",
+        "active": true,
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Zotero/siegelEmotionFingerprintsEmotion2018-zotero.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "4b21c83d08e0e105",
+    "type": "split",
+    "children": [
+      {
+        "id": "c6533604d641c5ae",
+        "type": "tabs",
+        "dimension": 62.35294117647059,
+        "children": [
+          {
+            "id": "ca3b382761af6f85",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "c18652c69d92e93a",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#book"
+              }
+            }
+          },
+          {
+            "id": "2bd67832d3e3f1d3",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      },
+      {
+        "id": "c53dc5976348f11b",
+        "type": "tabs",
+        "dimension": 37.64705882352941,
+        "children": [
+          {
+            "id": "3908e1486d320c31",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 319
+  },
+  "right": {
+    "id": "623838c5958ea167",
+    "type": "split",
+    "children": [
+      {
+        "id": "cd041a7acc84d4f8",
+        "type": "tabs",
+        "dimension": 28.454172366621066,
+        "children": [
+          {
+            "id": "b26b428d21d789a5",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Zotero/siegelEmotionFingerprintsEmotion2018-zotero.md"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "46763d650d158e01",
+        "type": "tabs",
+        "dimension": 32.14774281805746,
+        "children": [
+          {
+            "id": "3f73665a283cc195",
+            "type": "leaf",
+            "state": {
+              "type": "localgraph",
+              "state": {
+                "file": "Zotero/siegelEmotionFingerprintsEmotion2018-zotero.md",
+                "options": {
+                  "search": "",
+                  "localJumps": 1,
+                  "localBacklinks": true,
+                  "localForelinks": true,
+                  "localInterlinks": false,
+                  "showTags": true,
+                  "showAttachments": false,
+                  "hideUnresolved": false,
+                  "showArrow": false,
+                  "textFadeMultiplier": -3,
+                  "nodeSizeMultiplier": 2.0572516025641,
+                  "lineSizeMultiplier": 1,
+                  "centerStrength": 0.518713248970312,
+                  "repelStrength": 10,
+                  "linkStrength": 1,
+                  "linkDistance": 250,
+                  "scale": 0.2002381603618033
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "a5e299acd0eb3a87",
+        "type": "tabs",
+        "dimension": 39.398084815321475,
+        "children": [
+          {
+            "id": "bc7e6aff585bc521",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Zotero/siegelEmotionFingerprintsEmotion2018-zotero.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 385
+  },
+  "lastOpenFiles": [
+    "siegelEmotionFingerprintsEmotion2018-zotero.md",
+    "neurobic exercises.md",
+    "LifeSmack MOC.md",
+    "Foreign Films Without Subtitles.md",
+    "Writing About A Traumatic Life Event.md",
+    "LifeHack MOC.md",
+    "Finding A Mentor.md",
+    "Be Exotic.md",
+    "Dance on your own.md",
+    "CC - Lecture 1: Cognition and Communication .md"
+  ]
+}
